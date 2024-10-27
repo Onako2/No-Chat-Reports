@@ -1,15 +1,12 @@
 package com.aizistral.nochatreports.common.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -40,7 +37,7 @@ public class AdvancedImageButton extends ImageButton {
 
 	@Override
 	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-		graphics.blitSprite(this.getCurrentTexture(), this.getX(), this.getY(), this.width, this.height);
+		graphics.blitSprite(RenderType::guiTextured, this.getCurrentTexture(), this.getX(), this.getY(), this.width, this.height);
 
 		if (this.isHovered)
 			if (this.tooltip instanceof AdvancedWidgetTooltipHolder holder && holder.hasCustomRender()) {

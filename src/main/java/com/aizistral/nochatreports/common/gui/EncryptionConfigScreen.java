@@ -1,29 +1,22 @@
 package com.aizistral.nochatreports.common.gui;
 
-import java.util.Objects;
-
 import com.aizistral.nochatreports.common.config.NCRConfig;
 import com.aizistral.nochatreports.common.config.NCRConfigEncryption;
 import com.aizistral.nochatreports.common.encryption.Encryption;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Checkbox;
-import net.minecraft.client.gui.components.CycleButton;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.MultiLineLabel;
-import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringUtil;
+
+import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class EncryptionConfigScreen extends Screen {
@@ -200,7 +193,7 @@ public class EncryptionConfigScreen extends Screen {
 			graphics.drawString(this.font, PASS_NOT_ALLOWED, this.passField.getX() + 4,
 					this.passField.getY() + 5, 0x999999);
 			RenderSystem.enableDepthTest();
-			graphics.blitSprite(CROSSMARK, this.passField.getX() - 20, this.passField.getY() + 3, 14, 13);
+			graphics.blitSprite(RenderType::guiTextured, CROSSMARK, this.passField.getX() - 20, this.passField.getY() + 3, 14, 13);
 		}
 	}
 

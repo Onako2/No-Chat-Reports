@@ -1,18 +1,18 @@
 package com.aizistral.nochatreports.common.core;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.jetbrains.annotations.Nullable;
-
 import com.aizistral.nochatreports.common.gui.UnsafeServerScreen;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
+import net.minecraft.network.chat.LocalChatSession;
+import net.minecraft.network.protocol.game.ServerboundChatSessionUpdatePacket;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * All this global state is questionable, but we have to...
@@ -47,7 +47,14 @@ public final class ServerSafetyState {
 				if (allow && connection.chatSession == null)
 					return Minecraft.getInstance().getProfileKeyPairManager().prepareKeyPair()
 							.thenAcceptAsync(optional -> optional.ifPresent(profileKeyPair -> {
-								connection.setKeyPair(profileKeyPair);
+								Minecraft minecraft = Minecraft.getInstance();
+								if (minecraft.isLocalPlayer(minecraft.getGameProfile().getId())) {
+									if (connection.chatSession == null || !connection.chatSession.keyPair().equals(profileKeyPair)) {
+										connection.chatSession = LocalChatSession.create(profileKeyPair);
+										connection.signedMessageEncoder = connection.chatSession.createMessageEncoder(minecraft.getGameProfile().getId());
+										connection.send(new ServerboundChatSessionUpdatePacket(connection.chatSession.asRemote().asData()));
+									}
+								}
 								SIGNING_ACTIONS.forEach(Runnable::run);
 								SIGNING_ACTIONS.clear();
 							}), Minecraft.getInstance());
