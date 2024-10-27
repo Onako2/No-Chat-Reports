@@ -8,9 +8,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
-import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2ic;
@@ -74,17 +72,17 @@ public class AdvancedTooltip extends Tooltip {
 
 	public void doCustomRender(Screen screen, GuiGraphics graphics, int x, int y, ClientTooltipPositioner positioner) {
 		if (this.renderWithoutGap) {
-			this.renderTooltipNoGap(screen, graphics, splitTooltip(screen.minecraft, this.getMessage(), this.maxWidth), x, y, positioner);
+			this.renderTooltipNoGap(screen, graphics, splitTooltip(screen.minecraft, this.getMessage(), this.maxWidth), this.getMessage(), x, y, positioner);
 		} else
 			throw new UnsupportedOperationException("This tooltip doesn't support custom render!");
 	}
 
-	protected void renderTooltipNoGap(Screen screen, GuiGraphics poseStack, List<? extends FormattedCharSequence> list, int x, int y, ClientTooltipPositioner positioner) {
-		this.renderTooltipInternalNoGap(screen, poseStack, list.stream().map(ClientTooltipComponent::create).collect(Collectors.toList()), x, y, positioner);
+	protected void renderTooltipNoGap(Screen screen, GuiGraphics poseStack, List<? extends FormattedCharSequence> list, Component component, int x, int y, ClientTooltipPositioner positioner) {
+		this.renderTooltipInternalNoGap(screen, poseStack, list.stream().map(ClientTooltipComponent::create).collect(Collectors.toList()), component, x, y, positioner);
 	}
 
 	// Originates from GuiGraphics
-	protected void renderTooltipInternalNoGap(Screen screen, GuiGraphics graphics, List<ClientTooltipComponent> list, int i, int j, ClientTooltipPositioner clientTooltipPositioner) {
+	protected void renderTooltipInternalNoGap(Screen screen, GuiGraphics graphics, List<ClientTooltipComponent> list, Component component, int i, int j, ClientTooltipPositioner clientTooltipPositioner) {
 		ClientTooltipComponent clientTooltipComponent2;
 		int t;
 		if (list.isEmpty())
@@ -105,21 +103,20 @@ public class AdvancedTooltip extends Tooltip {
 		int q = vector2ic.y();
 		graphics.pose().pushPose();
 		int r = 400;
-		TooltipRenderUtil.renderTooltipBackground(graphics, p, q, n, o, 400, ResourceLocation.withDefaultNamespace("textures/gui/sprites/tooltip/background.png"));
 		graphics.pose().translate(0.0f, 0.0f, 400.0f);
-		int s = q;
+
+        int maxWidth = 0;
+
 		for (t = 0; t < list.size(); ++t) {
 			clientTooltipComponent2 = list.get(t);
-			// TODO: Fix this
-//			clientTooltipComponent2.renderText(screen.font, p, s, graphics.pose().last().pose(), graphics.bufferSource());
-			s += clientTooltipComponent2.getHeight(screen.font) + /*(t == 0 ? 2 : 0)*/ 0;
+			if (clientTooltipComponent2.getWidth(screen.font) > maxWidth) {
+				maxWidth = clientTooltipComponent2.getWidth(screen.font);
+			}
 		}
-		s = q;
-		for (t = 0; t < list.size(); ++t) {
-			clientTooltipComponent2 = list.get(t);
-			clientTooltipComponent2.renderImage(screen.font, p, s, 0, 0, graphics);
-			s += clientTooltipComponent2.getHeight(screen.font) + /*(t == 0 ? 2 : 0)*/ 0;
-		}
+
+		System.out.println(maxWidth);
+		graphics.renderTooltip(screen.font, splitTooltip(screen.minecraft, component), p + maxWidth , q, null);
+
 		graphics.pose().popPose();
 	}
 
