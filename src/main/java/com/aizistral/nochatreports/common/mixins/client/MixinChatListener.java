@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.UUID;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,6 +40,8 @@ public class MixinChatListener {
 	private boolean isSenderLocalPlayer(UUID uuid) {
 		throw new IllegalStateException("@Shadow transformation failed. Should never happen.");
 	}
+
+	@Shadow @Final private Minecraft minecraft;
 
 	@Inject(method = "handleSystemMessage", at = @At("HEAD"), cancellable = true)
 	private void onHandleSystemMessage(Component message, boolean overlay, CallbackInfo info) {
@@ -115,7 +118,8 @@ public class MixinChatListener {
 	@ModifyVariable(method = "narrateChatMessage(Lnet/minecraft/network/chat/ChatType$Bound;"
 			+ "Lnet/minecraft/network/chat/Component;)V", at = @At("HEAD"), argsOnly = true)
 	private Component decryptNarratedMessage(Component msg) {
-		return EncryptionUtil.tryDecrypt(msg).orElse(msg);
+        assert minecraft.level != null;
+        return EncryptionUtil.tryDecrypt(minecraft.level.registryAccess(), msg).orElse(msg);
 	}
 
 }

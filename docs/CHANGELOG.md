@@ -1,3 +1,9 @@
+#### **\[Build 1.21.1-v2.9.0\]:**
+
+- Initial 1.21.1 port;
+- Fixed a bug where client would disconnect from Realms if encryption is enabled, and a player's death from a named item is announced in chat ([thanks forkiesassds, #480](https://github.com/Aizistral-Studios/No-Chat-Reports/pull/480));
+- Fixed server ping hanging up in multiplayer menu in some cases ([thanks pietro-lopes, #487](https://github.com/Aizistral-Studios/No-Chat-Reports/pull/487)).
+
 #### **\[Build 1.21-v2.8.0\]:**
 
 - Initial 1.21 port.
