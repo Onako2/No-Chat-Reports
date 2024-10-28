@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.aizistral.nochatreports.common.NCRCore;
 import com.aizistral.nochatreports.common.config.NCRConfig;
 import com.aizistral.nochatreports.common.core.ServerDataExtension;
-import com.aizistral.nochatreports.common.platform.extensions.ServerPingerExtension;
 
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.network.protocol.status.ClientboundStatusResponsePacket;
@@ -30,7 +29,7 @@ import net.minecraft.network.protocol.status.ServerStatus;
  */
 
 @Mixin(targets = "net/minecraft/client/multiplayer/ServerStatusPinger$1")
-public abstract class MixinServerStatusPinger$1 implements ServerPingerExtension {
+public abstract class MixinServerStatusPinger$1 {
 
 	@Unique
 	private ServerDataExtension nochatreports$serverData;
