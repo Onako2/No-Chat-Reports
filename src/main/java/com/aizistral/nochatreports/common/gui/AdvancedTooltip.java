@@ -114,7 +114,6 @@ public class AdvancedTooltip extends Tooltip {
 			}
 		}
 
-		System.out.println(maxWidth);
 		graphics.renderTooltip(screen.font, splitTooltip(screen.minecraft, component), p + maxWidth , q, null);
 
 		graphics.pose().popPose();
