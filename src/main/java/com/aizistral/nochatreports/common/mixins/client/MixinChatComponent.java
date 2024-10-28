@@ -1,6 +1,9 @@
 package com.aizistral.nochatreports.common.mixins.client;
 
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 
@@ -22,6 +25,7 @@ import net.minecraft.network.chat.FormattedText;
 
 @Mixin(ChatComponent.class)
 public class MixinChatComponent {
+	@Shadow @Final private Minecraft minecraft;
 	private static final GuiMessageTag.Icon ENCRYPTED_ICON = GuiMessageTag.Icon.valueOf("CHAT_NCR_ENCRYPTED");
 	private boolean lastMessageEncrypted;
 	private Component lastMessageOriginal;
@@ -44,10 +48,11 @@ public class MixinChatComponent {
 					Component.Serializer.toJson(msg.content(),  RegistryAccess.EMPTY));
 		}
 
-		var decrypted = EncryptionUtil.tryDecrypt(msg.content());
+        assert minecraft.level != null;
+        var decrypted = EncryptionUtil.tryDecrypt(minecraft.level.registryAccess(), msg.content());
 
 		decrypted.ifPresentOrElse(component -> {
-			this.lastMessageOriginal = EncryptionUtil.recreate(msg.content());
+			this.lastMessageOriginal = EncryptionUtil.recreate(minecraft.level.registryAccess(), msg.content());
 			this.lastMessageEncrypted = true;
 		}, () -> this.lastMessageEncrypted = false);
 

@@ -6,6 +6,7 @@ import com.aizistral.nochatreports.common.NCRCore;
 import com.aizistral.nochatreports.common.config.NCRConfig;
 import com.aizistral.nochatreports.common.encryption.Encryptor;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
@@ -15,13 +16,13 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 
 public class EncryptionUtil {
 
-	public static Optional<Component> tryDecrypt(Component component) {
+	public static Optional<Component> tryDecrypt(HolderLookup.Provider provider, Component component) {
 		var optional = NCRConfig.getEncryption().getEncryptor();
 		if (optional.isEmpty())
 			return Optional.empty();
 
 		Encryptor<?> encryption = optional.get();
-		Component copy = recreate(component);
+		Component copy = recreate(provider, component);
 		ComponentContents contents = copy.getContents();
 
 		return Optional.ofNullable(tryDecrypt(copy, encryption) ? copy : null);
@@ -81,8 +82,8 @@ public class EncryptionUtil {
 		}
 	}
 
-	public static Component recreate(Component component) {
-		return Component.Serializer.fromJson(Component.Serializer.toJson(component, RegistryAccess.EMPTY), RegistryAccess.EMPTY);
+	public static Component recreate(HolderLookup.Provider provider, Component component) {
+		return Component.Serializer.fromJson(Component.Serializer.toJson(component, provider), provider);
 	}
 
 }
