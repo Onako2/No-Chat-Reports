@@ -64,7 +64,7 @@ public class MixinChatComponent {
 
 			if (NCRConfig.getEncryption().showEncryptionIndicators()) {
 				Component tooltip = Component.empty().append(Component.translatable("tag.nochatreports.encrypted",
-						Component.literal(NCRConfig.getEncryption().getAlgorithm().getName())
+						Component.translatable(NCRConfig.getEncryption().getAlgorithm().getNameLocalizationKey())
 						.withStyle(ChatFormatting.BOLD))).append(CommonComponents.NEW_LINE).append(
 								Component.translatable("tag.nochatreports.encrypted_original",
 										this.lastMessageOriginal));

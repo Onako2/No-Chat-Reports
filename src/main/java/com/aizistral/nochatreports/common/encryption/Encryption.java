@@ -38,6 +38,10 @@ public abstract class Encryption {
 		return this.name;
 	}
 
+	public String getNameLocalizationKey() {
+		return "algorithm.nochatreports." + this.id + ".name";
+	}
+
 	public abstract String getRandomKey();
 
 	public abstract String getDefaultKey();
