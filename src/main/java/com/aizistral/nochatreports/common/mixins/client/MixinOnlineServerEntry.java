@@ -1,33 +1,33 @@
 package com.aizistral.nochatreports.common.mixins.client;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import com.aizistral.nochatreports.common.config.NCRConfig;
 import com.aizistral.nochatreports.common.core.ServerDataExtension;
 import com.aizistral.nochatreports.common.gui.FontHelper;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.gui.screens.multiplayer.ServerSelectionList;
 import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Mixin(ServerSelectionList.OnlineServerEntry.class)
 public abstract class MixinOnlineServerEntry extends ServerSelectionList.Entry {
+	@Unique
 	private static final ResourceLocation VERIFIED_ICON = ResourceLocation.fromNamespaceAndPath("nochatreports", "verified_server");
 
 	@Shadow @Final
@@ -47,7 +47,7 @@ public abstract class MixinOnlineServerEntry extends ServerSelectionList.Entry {
 					yOffset = NCRConfig.getClient().getVerifiedIconOffsetY();
 
 			RenderSystem.enableBlend();
-			graphics.blitSprite(VERIFIED_ICON, k + l - 35 + xOffset, j - 1 + yOffset, 14, 14);
+			graphics.blitSprite(RenderType::guiTextured, VERIFIED_ICON, k + l - 35 + xOffset, j - 1 + yOffset, 14, 14);
 			RenderSystem.disableBlend();
 
 			int t = n - k;
