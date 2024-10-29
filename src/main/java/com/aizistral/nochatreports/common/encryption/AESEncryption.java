@@ -19,7 +19,7 @@ public abstract class AESEncryption extends Encryption {
 	private final boolean requiresIV;
 
 	protected AESEncryption(String mode, String padding, boolean requiresIV) {
-		super("aes_" + mode.toLowerCase() + "_base64", "AES/" + mode + "+Base64");
+		super("aes_" + mode.toLowerCase() + "_base64", "AES/" + mode + "+Base64R");
 		this.mode = mode;
 		this.padding = padding;
 		this.requiresIV = requiresIV;
