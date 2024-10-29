@@ -41,23 +41,19 @@ public final class ServerSafetyState {
 
 	public static CompletableFuture<Void> setAllowChatSigning(boolean allow) {
 		if (ALLOW_CHAT_SIGNING.compareAndSet(!allow, allow)) {
-			if (Minecraft.getInstance().player != null) {
-				var connection = Minecraft.getInstance().player.connection;
+			Minecraft mc = Minecraft.getInstance();
+			
+			if (mc.player != null) {
+				var connection = mc.player.connection;
 
 				if (allow && connection.chatSession == null)
-					return Minecraft.getInstance().getProfileKeyPairManager().prepareKeyPair()
+					return mc.getProfileKeyPairManager().prepareKeyPair()
 							.thenAcceptAsync(optional -> optional.ifPresent(profileKeyPair -> {
-								Minecraft minecraft = Minecraft.getInstance();
-								if (minecraft.isLocalPlayer(minecraft.getGameProfile().getId())) {
-									if (connection.chatSession == null || !connection.chatSession.keyPair().equals(profileKeyPair)) {
-										connection.chatSession = LocalChatSession.create(profileKeyPair);
-										connection.signedMessageEncoder = connection.chatSession.createMessageEncoder(minecraft.getGameProfile().getId());
-										connection.send(new ServerboundChatSessionUpdatePacket(connection.chatSession.asRemote().asData()));
-									}
-								}
+								connection.setKeyPair(profileKeyPair);
+								
 								SIGNING_ACTIONS.forEach(Runnable::run);
 								SIGNING_ACTIONS.clear();
-							}), Minecraft.getInstance());
+							}), mc);
 			}
 		}
 
