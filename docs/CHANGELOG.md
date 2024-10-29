@@ -1,3 +1,10 @@
+#### **\[Build 1.21.3-v2.10.0\]:**
+
+- Initial 1.21.3 port ([thanks Onako2, #491](https://github.com/Aizistral-Studios/No-Chat-Reports/pull/491));
+- Renamed `AES/X+Base64` algorithms to `AES/X+Base64R` in encryption config;
+- Algorithm names used in encrypted tag tooltip are now correctly localized.
+
+
 #### **\[Build 1.21.1-v2.9.0\]:**
 
 - Initial 1.21.1 port;
